@@ -1,143 +1,96 @@
--- LSP Configuration
-local mason = require("mason")
-local mason_lspconfig = require("mason-lspconfig")
-local lspconfig = require("lspconfig")
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
+-- lua/plugins/lsp.lua - Neovim 0.11+ 兼容版本
+-- 修复了弃用警告并使用正确的服务器名称
 
--- Enable Mason
-mason.setup({
-  ui = {
-    icons = {
-      package_installed = "✓",
-      package_pending = "➜",
-      package_uninstalled = "✗",
-    },
-  },
+-- 全局诊断快捷键
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+-- LSP 附加时的自动配置
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    local bufnr = args.buf
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+    -- 启用 omnifunc 补全
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    -- 缓冲区局部快捷键
+    local opts = { buffer = bufnr }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>f', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+  end,
 })
 
--- Mason LSP config
-mason_lspconfig.setup({
-  ensure_installed = {
-    "pyright",       -- Python
-    "lua_ls",        -- Lua
-    "tsserver",      -- TypeScript/JavaScript
-    "html",          -- HTML
-    "cssls",         -- CSS
-    "jsonls",        -- JSON
-    "bashls",        -- Bash
-  },
-  automatic_installation = true,
-})
+-- 启用语言服务器
+-- 根据你的需要启用以下服务器
+vim.lsp.enable('lua_ls')          -- Lua
+vim.lsp.enable('pyright')         -- Python
+vim.lsp.enable('ts_ls')           -- TypeScript/JavaScript (注意：不是 tsserver!)
+vim.lsp.enable('rust_analyzer')   -- Rust
+vim.lsp.enable('gopls')           -- Go
+-- vim.lsp.enable('clangd')       -- C/C++
+-- vim.lsp.enable('html')         -- HTML
+-- vim.lsp.enable('cssls')        -- CSS
+-- vim.lsp.enable('jsonls')       -- JSON
 
--- Capabilities for autocompletion
-local capabilities = cmp_nvim_lsp.default_capabilities()
+-- 自定义配置示例（可选）
+-- 如果需要修改默认配置，在 enable() 之前调用 config()
 
--- Diagnostic configuration
-vim.diagnostic.config({
-  virtual_text = true,
-  signs = true,
-  update_in_insert = false,
-  underline = true,
-  severity_sort = true,
-  float = {
-    border = "rounded",
-    source = "always",
-  },
-})
-
--- Diagnostic signs
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
--- On attach function for LSP keymaps
-local on_attach = function(client, bufnr)
-  local opts = { noremap = true, silent = true, buffer = bufnr }
-  local keymap = vim.keymap
-
-  -- LSP keymaps
-  keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
-  keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-  keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Show hover information" }))
-  keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to implementation" }))
-  keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Show signature help" }))
-  keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename symbol" }))
-  keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code action" }))
-  keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "Show references" }))
-  keymap.set("n", "<leader>d", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "Show diagnostic" }))
-  keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "Previous diagnostic" }))
-  keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "Next diagnostic" }))
-  keymap.set("n", "<leader>f", function()
-    vim.lsp.buf.format({ async = true })
-  end, vim.tbl_extend("force", opts, { desc = "Format document" }))
-end
-
--- Python LSP (Pyright)
-lspconfig.pyright.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
+-- 示例：Python 配置
+vim.lsp.config('pyright', {
   settings = {
     python = {
       analysis = {
-        typeCheckingMode = "basic",
         autoSearchPaths = true,
         useLibraryCodeForTypes = true,
-        diagnosticMode = "workspace",
-      },
-    },
-  },
+        diagnosticMode = 'workspace',
+        typeCheckingMode = 'basic',
+      }
+    }
+  }
 })
 
--- Lua LSP
-lspconfig.lua_ls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
+-- 示例：TypeScript/JavaScript 配置
+vim.lsp.config('ts_ls', {
   settings = {
-    Lua = {
-      diagnostics = {
-        globals = { "vim" },
-      },
-      workspace = {
-        library = {
-          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-          [vim.fn.stdpath("config") .. "/lua"] = true,
-        },
-      },
-      telemetry = {
-        enable = false,
-      },
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      }
     },
-  },
-})
-
--- TypeScript/JavaScript LSP
-lspconfig.tsserver.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- HTML LSP
-lspconfig.html.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- CSS LSP
-lspconfig.cssls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- JSON LSP
-lspconfig.jsonls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- Bash LSP
-lspconfig.bashls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      }
+    }
+  }
 })
