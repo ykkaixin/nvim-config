@@ -54,10 +54,51 @@ if ok_mason and ok_mason_lsp then
     automatic_installation = false,
   })
 
-  mason_lspconfig.setup_handlers({
-    function(server)
-      local opts = { on_attach = on_attach, capabilities = capabilities }
+  local servers = { 'lua_ls', 'pyright', 'ts_ls', 'rust_analyzer', 'gopls' }
+  if type(mason_lspconfig.setup_handlers) == 'function' then
+    mason_lspconfig.setup_handlers({
+      function(server)
+        local opts = { on_attach = on_attach, capabilities = capabilities }
 
+        if server == 'lua_ls' then
+          opts.settings = {
+            Lua = {
+              workspace = { checkThirdParty = false },
+              diagnostics = { globals = { 'vim' } },
+              telemetry = { enable = false },
+            },
+          }
+        elseif server == 'pyright' then
+          opts.settings = {
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode = 'workspace',
+                typeCheckingMode = 'basic',
+              },
+            },
+          }
+        elseif server == 'ts_ls' then
+          opts.init_options = {
+            preferences = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          }
+        end
+
+        lspconfig[server].setup(opts)
+      end,
+    })
+  else
+    -- Compatibility fallback for older mason-lspconfig (no setup_handlers)
+    for _, server in ipairs(servers) do
+      local opts = { on_attach = on_attach, capabilities = capabilities }
       if server == 'lua_ls' then
         opts.settings = {
           Lua = {
@@ -89,10 +130,9 @@ if ok_mason and ok_mason_lsp then
           },
         }
       end
-
       lspconfig[server].setup(opts)
-    end,
-  })
+    end
+  end
 else
   -- Fallback: basic manual setups if mason is unavailable
   local servers = { 'lua_ls', 'pyright', 'ts_ls', 'rust_analyzer', 'gopls' }
