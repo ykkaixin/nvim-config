@@ -21,6 +21,20 @@ cmp.setup({
     ["<CR>"] = cmp.mapping.confirm({ select = false }),
     -- Tab completion
     ["<Tab>"] = cmp.mapping(function(fallback)
+      -- Prefer accepting Codeium ghost text when available
+      local has_codeium = false
+      local ok = pcall(function()
+        local c = vim.b._codeium_completions
+        has_codeium = type(c) == 'table' and type(c.items) == 'table' and type(c.index) == 'number' and c.index < #c.items
+      end)
+      if ok and has_codeium then
+        local accepted = vim.fn["codeium#Accept"]()
+        if type(accepted) == 'string' and accepted ~= '' then
+          local keys = vim.api.nvim_replace_termcodes(accepted, true, true, true)
+          vim.api.nvim_feedkeys(keys, 'n', true)
+          return
+        end
+      end
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then

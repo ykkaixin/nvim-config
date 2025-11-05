@@ -40,6 +40,15 @@ local ts_server = 'ts_ls'
 
 -- Build server list and per-server opts
 local servers = { 'lua_ls', 'pyright', ts_server, 'rust_analyzer', 'gopls' }
+
+-- Enable only if the underlying binary is available to avoid noisy warnings
+local server_cmd = {
+  lua_ls = 'lua-language-server',
+  pyright = 'pyright-langserver',
+  [ts_server] = 'typescript-language-server',
+  rust_analyzer = 'rust-analyzer',
+  gopls = 'gopls',
+}
 local function make_opts(server)
   local opts = { on_attach = on_attach, capabilities = capabilities }
   if server == 'lua_ls' then
@@ -78,11 +87,16 @@ end
 
 -- Mason UI (manual install via :Mason)
 pcall(function()
-  require('mason').setup()
+  require('mason').setup({
+    PATH = 'append',
+  })
 end)
 
 -- Define and enable configs directly
 for _, server in ipairs(servers) do
-  vim.lsp.config(server, make_opts(server))
-  vim.lsp.enable(server)
+  local cmd = server_cmd[server]
+  if not cmd or vim.fn.executable(cmd) == 1 then
+    vim.lsp.config(server, make_opts(server))
+    vim.lsp.enable(server)
+  end
 end
