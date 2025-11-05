@@ -2,7 +2,7 @@
 
 ## 快速上手
 - 首次启动：`nvim`（lazy.nvim 会自动安装插件）。
-- LSP 服务器：在 Neovim 执行 `:Mason` 安装 `pyright`、`lua_ls`、`tsserver` 等；用 `:LspInfo` 查看状态。
+- LSP 服务器：在 Neovim 执行 `:Mason` 安装 `pyright`、`lua_ls`、`ts_ls` 等；用 `:LspInfo` 查看状态。
 - AI 补全（Codeium）：执行 `:Codeium Auth` 完成鉴权。
 
 ## 常用按键（Leader = 空格）

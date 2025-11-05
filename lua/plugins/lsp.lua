@@ -47,7 +47,7 @@ if ok_mason and ok_mason_lsp then
     ensure_installed = {
       'lua_ls',
       'pyright',
-      'tsserver',
+      'ts_ls',
       'rust_analyzer',
       'gopls',
     },
@@ -77,7 +77,7 @@ if ok_mason and ok_mason_lsp then
             },
           },
         }
-      elseif server == 'tsserver' then
+      elseif server == 'ts_ls' then
         opts.init_options = {
           preferences = {
             includeInlayParameterNameHints = 'all',
@@ -95,7 +95,7 @@ if ok_mason and ok_mason_lsp then
   })
 else
   -- Fallback: basic manual setups if mason is unavailable
-  local servers = { 'lua_ls', 'pyright', 'tsserver', 'rust_analyzer', 'gopls' }
+  local servers = { 'lua_ls', 'pyright', 'ts_ls', 'rust_analyzer', 'gopls' }
   for _, s in ipairs(servers) do
     lspconfig[s].setup({ on_attach = on_attach, capabilities = capabilities })
   end

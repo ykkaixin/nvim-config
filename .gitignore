@@ -24,6 +24,14 @@ xcuserdata/
 *.xcscmblueprint
 tmp/
 
+# Generic backup/temporary files
+*.backup
+*.bak
+*.orig
+*~
+*.swp
+*.swo
+
 # macOS
 #
 # Copied from: https://github.com/github/gitignore/blob/6c87d249af5f2b3f8ab65ae0a2648682ee4e8a2d/Global/macOS.gitignore
