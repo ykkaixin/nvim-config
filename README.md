@@ -295,8 +295,8 @@ sudo dnf groupinstall "Development Tools"
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/ykkaixin/vimrc.git
-   cd vimrc
+   git clone https://github.com/ykkaixin/nvim-config.git
+   cd nvim-config
    ```
 
 2. Run the installation script:
@@ -320,7 +320,7 @@ On first launch, plugins will automatically install. This may take a few minutes
 
 2. Clone this repository to your Neovim config directory:
    ```bash
-   git clone https://github.com/ykkaixin/vimrc.git ~/.config/nvim
+   git clone https://github.com/ykkaixin/nvim-config.git ~/.config/nvim
    ```
 
 3. Launch Neovim and wait for plugins to install:
@@ -357,6 +357,20 @@ Codeium is a free AI-powered autocomplete tool:
 3. Return to Neovim and start coding!
 
 ## Usage
+
+### Plugin Usage
+
+- lazy.nvim: Manage plugins with `:Lazy`, sync with `:Lazy sync`, clean with `:Lazy clean`.
+- Mason (LSP): Open `:Mason`, install servers (e.g., `pyright`, `lua_ls`, `tsserver`), check status with `:LspInfo`.
+- Telescope: `:Telescope find_files`, `:Telescope live_grep`, `:Telescope buffers`, or use keymaps below.
+- Nvim-tree: Toggle `:NvimTreeToggle`, reveal current file `:NvimTreeFindFile`.
+- Gitsigns: `:Gitsigns preview_hunk`, `:Gitsigns reset_hunk`, `:Gitsigns blame_line`, `:Gitsigns toggle_current_line_blame`.
+- Treesitter: Update parsers `:TSUpdate`; install `:TSInstall <lang>`.
+- nvim-cmp: Trigger `<C-Space>`, navigate `<C-j>/<C-k>`, confirm `<CR>`.
+- Codeium: Authenticate `:Codeium Auth`; accept `<C-g>`, next `<C-]>`, previous `<C-\\>`, clear `<C-x>`.
+- Which-key: Press `<leader>` to view available prefixes.
+- Bufferline: `:BufferLinePick` to jump; navigate buffers `<S-h>/<S-l>`.
+- Indent guides (ibl): Toggle with `:IBLToggle`.
 
 ### Key Bindings
 
@@ -407,7 +421,7 @@ The leader key is `<Space>`.
 #### AI Autocomplete (Codeium)
 - `<C-g>` - Accept AI suggestion
 - `<C-]>` - Next suggestion
-- `<C-[>` - Previous suggestion
+- `<C-\\>` - Previous suggestion
 - `<C-x>` - Clear suggestion
 
 #### Window Management
@@ -494,7 +508,7 @@ Edit `lua/core/options.lua` to change Neovim behavior:
 ### If Installed via Symlink
 
 ```bash
-cd /path/to/vimrc
+cd /path/to/nvim-config
 git pull
 ```
 
@@ -503,7 +517,7 @@ Then in Neovim: `:Lazy sync`
 ### If Copied Configuration
 
 ```bash
-cd /path/to/vimrc
+cd /path/to/nvim-config
 git pull
 cp -r init.lua lua ~/.config/nvim/
 ```
@@ -579,8 +593,8 @@ When creating your own copy of this configuration, consider these naming options
 
 2. **Clone and customize:**
    ```bash
-   git clone https://github.com/ykkaixin/vimrc.git
-   cd vimrc
+   git clone https://github.com/ykkaixin/nvim-config.git
+   cd nvim-config
    # Customize your configuration as needed
    ```
 
@@ -596,13 +610,13 @@ When creating your own copy of this configuration, consider these naming options
 
 Your repository URL will be:
 ```bash
-https://github.com/ykkaixin/vimrc
+https://github.com/ykkaixin/nvim-config
 ```
 
 Anyone can then use your configuration:
 ```bash
-git clone https://github.com/ykkaixin/vimrc.git
-cd vimrc
+git clone https://github.com/ykkaixin/nvim-config.git
+cd nvim-config
 ./install.sh
 ```
 
