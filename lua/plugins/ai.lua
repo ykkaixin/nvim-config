@@ -12,7 +12,8 @@ vim.keymap.set("i", "<C-]>", function()
   return vim.fn["codeium#CycleCompletions"](1)
 end, { expr = true, silent = true, desc = "Next Codeium suggestion" })
 
-vim.keymap.set("i", "<C-[>", function()
+-- Avoid mapping <C-[> because it's equivalent to <Esc> and breaks Vim mode
+vim.keymap.set("i", "<C-\\>", function()
   return vim.fn["codeium#CycleCompletions"](-1)
 end, { expr = true, silent = true, desc = "Previous Codeium suggestion" })
 
