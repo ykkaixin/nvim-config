@@ -3,7 +3,7 @@
 可移植的现代 Neovim 配置，适合在任何新电脑上快速同步与使用。
 
 ## Requirements
-- Neovim ≥ 0.9
+- Neovim ≥ 0.11.3
 - Git
 - 推荐：Python3+pip、Node.js、ripgrep、fd（Telescope 更快）、基础构建工具（用于 `telescope-fzf-native`）
 
@@ -24,7 +24,7 @@ cd nvim-config
 nvim
 ```
 
-首次启动会自动安装插件。如需安装 LSP 服务器，在 Neovim 内执行 `:Mason`（或直接打开相应语言文件触发安装）。使用 AI 补全请执行 `:Codeium Auth` 完成鉴权。
+首次启动会自动安装插件。LSP 采用 Neovim 0.11 的新 API（`vim.lsp.config`），请使用 Neovim ≥ 0.11.3。安装/管理 LSP 服务器：在 Neovim 内执行 `:Mason`。使用 AI 补全请执行 `:Codeium Auth` 完成鉴权。
 
 ## Docs
 - 使用与插件说明：USAGE.md

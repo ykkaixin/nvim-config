@@ -1,4 +1,4 @@
--- Stable LSP setup using mason + lspconfig (Neovim 0.9+)
+-- Neovim 0.11+ is required (guarded in init.lua). Use new API directly.
 
 -- Diagnostics (global)
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Diagnostics: open float' })
@@ -33,110 +33,56 @@ local function on_attach(_, bufnr)
   vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format({ async = true }) end, opts)
 end
 
--- neodev (better Lua LS for Neovim)
 pcall(function() require('neodev').setup({}) end)
 
--- mason + mason-lspconfig
-local ok_mason, mason = pcall(require, 'mason')
-local ok_mason_lsp, mason_lspconfig = pcall(require, 'mason-lspconfig')
-local lspconfig = require('lspconfig')
+-- Prefer the modern name by default (ts_ls)
+local ts_server = 'ts_ls'
 
-if ok_mason and ok_mason_lsp then
-  mason.setup()
-  mason_lspconfig.setup({
-    ensure_installed = {
-      'lua_ls',
-      'pyright',
-      'ts_ls',
-      'rust_analyzer',
-      'gopls',
-    },
-    automatic_installation = false,
-  })
-
-  local servers = { 'lua_ls', 'pyright', 'ts_ls', 'rust_analyzer', 'gopls' }
-  if type(mason_lspconfig.setup_handlers) == 'function' then
-    mason_lspconfig.setup_handlers({
-      function(server)
-        local opts = { on_attach = on_attach, capabilities = capabilities }
-
-        if server == 'lua_ls' then
-          opts.settings = {
-            Lua = {
-              workspace = { checkThirdParty = false },
-              diagnostics = { globals = { 'vim' } },
-              telemetry = { enable = false },
-            },
-          }
-        elseif server == 'pyright' then
-          opts.settings = {
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
-                diagnosticMode = 'workspace',
-                typeCheckingMode = 'basic',
-              },
-            },
-          }
-        elseif server == 'ts_ls' then
-          opts.init_options = {
-            preferences = {
-              includeInlayParameterNameHints = 'all',
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            },
-          }
-        end
-
-        lspconfig[server].setup(opts)
-      end,
-    })
-  else
-    -- Compatibility fallback for older mason-lspconfig (no setup_handlers)
-    for _, server in ipairs(servers) do
-      local opts = { on_attach = on_attach, capabilities = capabilities }
-      if server == 'lua_ls' then
-        opts.settings = {
-          Lua = {
-            workspace = { checkThirdParty = false },
-            diagnostics = { globals = { 'vim' } },
-            telemetry = { enable = false },
-          },
-        }
-      elseif server == 'pyright' then
-        opts.settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = 'workspace',
-              typeCheckingMode = 'basic',
-            },
-          },
-        }
-      elseif server == 'ts_ls' then
-        opts.init_options = {
-          preferences = {
-            includeInlayParameterNameHints = 'all',
-            includeInlayFunctionParameterTypeHints = true,
-            includeInlayVariableTypeHints = true,
-            includeInlayPropertyDeclarationTypeHints = true,
-            includeInlayFunctionLikeReturnTypeHints = true,
-            includeInlayEnumMemberValueHints = true,
-          },
-        }
-      end
-      lspconfig[server].setup(opts)
-    end
+-- Build server list and per-server opts
+local servers = { 'lua_ls', 'pyright', ts_server, 'rust_analyzer', 'gopls' }
+local function make_opts(server)
+  local opts = { on_attach = on_attach, capabilities = capabilities }
+  if server == 'lua_ls' then
+    opts.settings = {
+      Lua = {
+        workspace = { checkThirdParty = false },
+        diagnostics = { globals = { 'vim' } },
+        telemetry = { enable = false },
+      },
+    }
+  elseif server == 'pyright' then
+    opts.settings = {
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true,
+          diagnosticMode = 'workspace',
+          typeCheckingMode = 'basic',
+        },
+      },
+    }
+  elseif server == 'ts_ls' or server == 'tsserver' then
+    opts.init_options = {
+      preferences = {
+        includeInlayParameterNameHints = 'all',
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+    }
   end
-else
-  -- Fallback: basic manual setups if mason is unavailable
-  local servers = { 'lua_ls', 'pyright', 'ts_ls', 'rust_analyzer', 'gopls' }
-  for _, s in ipairs(servers) do
-    lspconfig[s].setup({ on_attach = on_attach, capabilities = capabilities })
-  end
+  return opts
+end
+
+-- Mason UI (manual install via :Mason)
+pcall(function()
+  require('mason').setup()
+end)
+
+-- Define and enable configs directly
+for _, server in ipairs(servers) do
+  vim.lsp.config(server, make_opts(server))
+  vim.lsp.enable(server)
 end
