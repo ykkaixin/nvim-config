@@ -14,6 +14,7 @@ end
 -- Load core configuration
 require("core.options")
 require("core.keymaps")
+require("core.perf")
 
 -- Load plugin manager and plugins
 require("plugins")

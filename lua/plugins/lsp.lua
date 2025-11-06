@@ -1,6 +1,17 @@
 -- Neovim 0.11+ is required (guarded in init.lua). Use new API directly.
 
--- Diagnostics (global)
+-- Diagnostics (global) - optimized for performance
+vim.diagnostic.config({
+  virtual_text = {
+    severity = vim.diagnostic.severity.ERROR,  -- Only show errors as virtual text
+    spacing = 4,
+  },
+  update_in_insert = false,
+  severity_sort = true,
+  float = { border = 'rounded' },
+  signs = true,
+  underline = true,
+})
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Diagnostics: open float' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Diagnostics: previous' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Diagnostics: next' })
@@ -92,10 +103,17 @@ pcall(function()
   })
 end)
 
--- Define and enable configs directly
+-- Define and enable configs directly (with deduplication)
 for _, server in ipairs(servers) do
   local cmd = server_cmd[server]
   if not cmd or vim.fn.executable(cmd) == 1 then
+    -- Stop existing client if it exists to avoid duplicates
+    local clients = vim.lsp.get_clients({ name = server })
+    if #clients > 0 then
+      for _, client in ipairs(clients) do
+        client:stop()
+      end
+    end
     vim.lsp.config(server, make_opts(server))
     vim.lsp.enable(server)
   end
