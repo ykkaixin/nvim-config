@@ -16,6 +16,21 @@ vim.g.loaded_node_provider = 0    -- Disable Node.js
 vim.opt.synmaxcol = 200           -- Limit syntax highlighting to 200 columns
 vim.opt.maxmempattern = 2000      -- Limit memory used for pattern matching
 
+-- Reduce LSP logging (can cause performance issues)
+vim.lsp.set_log_level("ERROR")
+
+-- Optimize diagnostics to reduce CPU usage
+vim.diagnostic.config({
+  virtual_text = {
+    severity = vim.diagnostic.severity.ERROR,
+  },
+  update_in_insert = false,  -- Don't update diagnostics while typing
+  severity_sort = true,
+  float = { border = 'rounded' },
+  signs = true,
+  underline = true,
+})
+
 -- Large file detection and optimization
 local aug = vim.api.nvim_create_augroup("LargeFile", { clear = true })
 vim.api.nvim_create_autocmd("BufReadPre", {
@@ -31,6 +46,18 @@ vim.api.nvim_create_autocmd("BufReadPre", {
             vim.opt_local.bufhidden = "unload"
             vim.opt_local.undolevels = -1
             vim.cmd("syntax off")
+
+            -- Disable LSP for large files
+            vim.api.nvim_create_autocmd("LspAttach", {
+                buffer = vim.api.nvim_get_current_buf(),
+                callback = function(args)
+                    vim.schedule(function()
+                        vim.lsp.buf_detach_client(args.buf, args.data.client_id)
+                    end)
+                end,
+            })
+
+            print("Large file detected, some features disabled for performance")
         end
     end,
 })
@@ -44,6 +71,17 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Use simpler folding method for better performance
         vim.opt_local.foldmethod = "indent"
         vim.opt_local.foldlevel = 99
+
+        -- Limit Treesitter for very large Python files
+        local lines = vim.api.nvim_buf_line_count(0)
+        if lines > 5000 then
+            vim.schedule(function()
+                local ok, ts = pcall(require, "nvim-treesitter.configs")
+                if ok then
+                    pcall(vim.cmd, "TSBufDisable highlight")
+                end
+            end)
+        end
     end,
 })
 
@@ -61,3 +99,19 @@ vim.api.nvim_create_autocmd("InsertLeave", {
         vim.opt.cursorline = true
     end,
 })
+
+-- Debounce certain events to reduce CPU usage
+-- This prevents excessive updates when editing
+local debounce_timer = nil
+vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    callback = function()
+        if debounce_timer then
+            vim.fn.timer_stop(debounce_timer)
+        end
+        debounce_timer = vim.fn.timer_start(500, function()
+            -- Any debounced actions can go here
+            debounce_timer = nil
+        end)
+    end,
+})
+

@@ -76,8 +76,10 @@ local function make_opts(server)
         analysis = {
           autoSearchPaths = true,
           useLibraryCodeForTypes = true,
-          diagnosticMode = 'workspace',
-          typeCheckingMode = 'basic',
+          -- Changed from 'workspace' to 'openFilesOnly' to reduce CPU usage
+          -- 'workspace' analyzes ALL files in the project, which can be very slow
+          diagnosticMode = 'openFilesOnly',  -- Only analyze open files
+          typeCheckingMode = 'basic',  -- Can set to 'off' for even better performance
         },
       },
     }
