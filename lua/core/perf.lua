@@ -19,23 +19,94 @@ vim.opt.maxmempattern = 2000      -- Limit memory used for pattern matching
 -- Reduce LSP logging (can cause performance issues)
 vim.lsp.set_log_level("ERROR")
 
--- CRITICAL FIX: Disable virtual text to prevent CPU spike when errors exist
--- Virtual text constantly redraws when there are errors, causing 100% CPU usage
--- User reported: "有 Error 我不处理就会 CPU 暴涨"
+-- OPTIMIZED SOLUTION: Smart virtual text with performance optimization
+-- User requested: "我希望他自动显示但是又不消耗我的性能"
+--
+-- Strategy:
+-- 1. Virtual text appears after cursor stops (500ms delay)
+-- 2. Limited to ERROR level only
+-- 3. Text length capped at 80 chars
+-- 4. Combined with diagnostic debouncing
+-- 5. Hidden during cursor movement to reduce redraws
+
+-- Initial config with virtual text DISABLED (will be toggled smartly)
 vim.diagnostic.config({
-  virtual_text = false,  -- DISABLED: This was causing CPU spike with errors!
-  update_in_insert = false,  -- Don't update diagnostics while typing
+  virtual_text = false,  -- Will be enabled after cursor stops
+  update_in_insert = false,  -- Don't update while typing (CRITICAL!)
   severity_sort = true,
   float = {
     border = 'rounded',
-    source = 'always',  -- Show source in float window instead
+    source = 'always',
   },
   signs = {
-    severity = { min = vim.diagnostic.severity.WARN },  -- Only show warnings and errors
+    severity = { min = vim.diagnostic.severity.WARN },
   },
   underline = {
     severity = { min = vim.diagnostic.severity.WARN },
   },
+})
+
+-- Smart virtual text toggle: only show when cursor stops moving
+local virtual_text_timer = nil
+local virtual_text_visible = false
+
+local function hide_virtual_text()
+  if virtual_text_visible then
+    vim.diagnostic.config({ virtual_text = false })
+    virtual_text_visible = false
+  end
+end
+
+local function show_virtual_text_delayed()
+  -- Clear existing timer
+  if virtual_text_timer then
+    vim.fn.timer_stop(virtual_text_timer)
+    virtual_text_timer = nil
+  end
+
+  -- Hide immediately when cursor moves
+  hide_virtual_text()
+
+  -- Show after 500ms delay (when cursor stops)
+  virtual_text_timer = vim.fn.timer_start(500, function()
+    vim.diagnostic.config({
+      virtual_text = {
+        severity = vim.diagnostic.severity.ERROR,  -- Only errors
+        spacing = 4,
+        prefix = '●',
+        -- Limit text length to reduce rendering cost
+        format = function(diagnostic)
+          local max_width = 80
+          local message = diagnostic.message:gsub("\n", " ")  -- Remove newlines
+          if #message > max_width then
+            return message:sub(1, max_width) .. "..."
+          end
+          return message
+        end,
+      }
+    })
+    virtual_text_visible = true
+    virtual_text_timer = nil
+  end)
+end
+
+-- Trigger smart virtual text on cursor movement
+local vtext_group = vim.api.nvim_create_augroup("SmartVirtualText", { clear = true })
+vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+  group = vtext_group,
+  callback = show_virtual_text_delayed,
+})
+
+-- Hide when entering insert mode (typing) for better performance
+vim.api.nvim_create_autocmd("InsertEnter", {
+  group = vtext_group,
+  callback = hide_virtual_text,
+})
+
+-- Show when leaving insert mode
+vim.api.nvim_create_autocmd("InsertLeave", {
+  group = vtext_group,
+  callback = show_virtual_text_delayed,
 })
 
 -- Add diagnostic debouncing to prevent excessive updates
