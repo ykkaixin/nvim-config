@@ -19,17 +19,40 @@ vim.opt.maxmempattern = 2000      -- Limit memory used for pattern matching
 -- Reduce LSP logging (can cause performance issues)
 vim.lsp.set_log_level("ERROR")
 
--- Optimize diagnostics to reduce CPU usage
+-- CRITICAL FIX: Disable virtual text to prevent CPU spike when errors exist
+-- Virtual text constantly redraws when there are errors, causing 100% CPU usage
+-- User reported: "有 Error 我不处理就会 CPU 暴涨"
 vim.diagnostic.config({
-  virtual_text = {
-    severity = vim.diagnostic.severity.ERROR,
-  },
+  virtual_text = false,  -- DISABLED: This was causing CPU spike with errors!
   update_in_insert = false,  -- Don't update diagnostics while typing
   severity_sort = true,
-  float = { border = 'rounded' },
-  signs = true,
-  underline = true,
+  float = {
+    border = 'rounded',
+    source = 'always',  -- Show source in float window instead
+  },
+  signs = {
+    severity = { min = vim.diagnostic.severity.WARN },  -- Only show warnings and errors
+  },
+  underline = {
+    severity = { min = vim.diagnostic.severity.WARN },
+  },
 })
+
+-- Add diagnostic debouncing to prevent excessive updates
+-- This prevents LSP from constantly re-analyzing code with errors
+local diagnostic_debounce_timer = nil
+local original_handler = vim.lsp.handlers["textDocument/publishDiagnostics"]
+vim.lsp.handlers["textDocument/publishDiagnostics"] = function(...)
+  if diagnostic_debounce_timer then
+    vim.fn.timer_stop(diagnostic_debounce_timer)
+  end
+
+  local args = {...}
+  diagnostic_debounce_timer = vim.fn.timer_start(1000, function()  -- 1 second debounce
+    original_handler(unpack(args))
+    diagnostic_debounce_timer = nil
+  end)
+end
 
 -- Large file detection and optimization
 local aug = vim.api.nvim_create_augroup("LargeFile", { clear = true })

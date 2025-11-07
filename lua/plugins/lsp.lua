@@ -1,17 +1,7 @@
 -- Neovim 0.11+ is required (guarded in init.lua). Use new API directly.
 
--- Diagnostics (global) - optimized for performance
-vim.diagnostic.config({
-  virtual_text = {
-    severity = vim.diagnostic.severity.ERROR,  -- Only show errors as virtual text
-    spacing = 4,
-  },
-  update_in_insert = false,
-  severity_sort = true,
-  float = { border = 'rounded' },
-  signs = true,
-  underline = true,
-})
+-- NOTE: Diagnostics config is in lua/core/perf.lua to prevent CPU spikes with errors
+-- Diagnostic keymaps
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Diagnostics: open float' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Diagnostics: previous' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Diagnostics: next' })
