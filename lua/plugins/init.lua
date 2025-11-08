@@ -97,8 +97,40 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",  -- IntelliJ-style code navigation
+    },
     config = function()
       require("plugins.treesitter")
+    end,
+  },
+
+  -- ⭐ Variable highlighting (like IntelliJ) - BEST PLUGIN!
+  -- Automatically highlights all instances of the word under cursor
+  {
+    "RRethy/vim-illuminate",
+    event = "VeryLazy",
+    config = function()
+      require("illuminate").configure({
+        -- Providers: LSP (best), treesitter, regex
+        providers = {
+          'lsp',
+          'treesitter',
+          'regex',
+        },
+        -- Delay before highlighting (milliseconds)
+        delay = 100,
+        -- File types to disable
+        filetypes_denylist = {
+          'dirbuf',
+          'dirvish',
+          'fugitive',
+        },
+        -- Don't highlight under cursor
+        under_cursor = true,
+        -- Minimum word length to highlight
+        min_count_to_highlight = 1,
+      })
     end,
   },
 
