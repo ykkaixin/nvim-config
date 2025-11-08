@@ -52,3 +52,8 @@ keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 -- Quit
 keymap.set("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
 keymap.set("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Quit all without saving" })
+
+-- ⭐ IntelliJ-style variable navigation (vim-illuminate)
+-- Jump between highlighted references of word under cursor
+keymap.set("n", "]]", function() require("illuminate").goto_next_reference(false) end, { desc = "Next reference" })
+keymap.set("n", "[[", function() require("illuminate").goto_prev_reference(false) end, { desc = "Previous reference" })
