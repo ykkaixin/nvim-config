@@ -205,4 +205,81 @@ require("lazy").setup({
       })
     end,
   },
+
+  -- ============================================
+  -- 📝 Markdown 增强插件（最佳组合！）
+  -- ============================================
+
+  -- Markdown 预览（5.7k+ stars，最流行！）
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function()
+      vim.fn["mkdp#util#install"]()
+    end,
+    config = function()
+      require("plugins.markdown")
+    end,
+  },
+
+  -- Markdown 编辑增强（4.3k+ stars）
+  {
+    "preservim/vim-markdown",
+    ft = { "markdown" },
+    config = function()
+      -- 禁用默认键映射，我们自己配置
+      vim.g.vim_markdown_no_default_key_mappings = 0
+      -- 启用 YAML front matter
+      vim.g.vim_markdown_frontmatter = 1
+      -- 启用 TOML front matter
+      vim.g.vim_markdown_toml_frontmatter = 1
+      -- 启用 JSON front matter
+      vim.g.vim_markdown_json_frontmatter = 1
+      -- 自动折叠
+      vim.g.vim_markdown_folding_disabled = 0
+      -- 折叠级别
+      vim.g.vim_markdown_folding_level = 2
+      -- 代码块隐藏
+      vim.g.vim_markdown_conceal_code_blocks = 0
+      -- 新建列表项自动缩进
+      vim.g.vim_markdown_new_list_item_indent = 2
+      -- 自动保存目录
+      vim.g.vim_markdown_toc_autofit = 1
+      -- 高亮重点
+      vim.g.vim_markdown_emphasis_multiline = 1
+    end,
+  },
+
+  -- 表格编辑（1.5k+ stars）
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = { "markdown" },
+    config = function()
+      -- 使用 Markdown 风格的表格
+      vim.g.table_mode_corner = '|'
+      -- 快速格式化表格
+      vim.g.table_mode_auto_align = 1
+    end,
+  },
+
+  -- 自动列表/项目符号管理（300+ stars）
+  {
+    "dkarter/bullets.vim",
+    ft = { "markdown", "text", "gitcommit" },
+    config = function()
+      -- 启用的文件类型
+      vim.g.bullets_enabled_file_types = {
+        'markdown',
+        'text',
+        'gitcommit',
+      }
+      -- 启用 checkbox 切换
+      vim.g.bullets_checkbox_markers = ' .oOX'
+      -- 自动包装文本
+      vim.g.bullets_set_mappings = 1
+      -- 启用重新编号
+      vim.g.bullets_renumber_on_change = 1
+    end,
+  },
 })

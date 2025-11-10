@@ -57,3 +57,51 @@ keymap.set("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Quit all without saving" 
 -- Jump between highlighted references of word under cursor
 keymap.set("n", "]]", function() require("illuminate").goto_next_reference(false) end, { desc = "Next reference" })
 keymap.set("n", "[[", function() require("illuminate").goto_prev_reference(false) end, { desc = "Previous reference" })
+
+-- ============================================
+-- 📝 Markdown 快捷键
+-- ============================================
+
+-- Markdown 预览
+keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Markdown: 打开预览" })
+keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<CR>", { desc = "Markdown: 关闭预览" })
+keymap.set("n", "<leader>mt", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Markdown: 切换预览" })
+
+-- 表格模式
+keymap.set("n", "<leader>tm", "<cmd>TableModeToggle<CR>", { desc = "Markdown: 切换表格模式" })
+keymap.set("n", "<leader>tr", "<cmd>TableModeRealign<CR>", { desc = "Markdown: 重新对齐表格" })
+
+-- Markdown 导航（仅在 markdown 文件中生效）
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    -- 跳转到标题
+    keymap.set("n", "]]", "<Plug>Markdown_MoveToNextHeader", { buffer = true, desc = "下一个标题" })
+    keymap.set("n", "[[", "<Plug>Markdown_MoveToPreviousHeader", { buffer = true, desc = "上一个标题" })
+    keymap.set("n", "][", "<Plug>Markdown_MoveToNextSiblingHeader", { buffer = true, desc = "下一个同级标题" })
+    keymap.set("n", "[]", "<Plug>Markdown_MoveToPreviousSiblingHeader", { buffer = true, desc = "上一个同级标题" })
+    keymap.set("n", "]c", "<Plug>Markdown_MoveToCurHeader", { buffer = true, desc = "当前标题" })
+    keymap.set("n", "]u", "<Plug>Markdown_MoveToParentHeader", { buffer = true, desc = "父级标题" })
+
+    -- 格式化
+    keymap.set("n", "<leader>mb", "viw<esc>a**<esc>bi**<esc>", { buffer = true, desc = "Markdown: 加粗" })
+    keymap.set("v", "<leader>mb", "<esc>`>a**<esc>`<i**<esc>", { buffer = true, desc = "Markdown: 加粗" })
+    keymap.set("n", "<leader>mi", "viw<esc>a*<esc>bi*<esc>", { buffer = true, desc = "Markdown: 斜体" })
+    keymap.set("v", "<leader>mi", "<esc>`>a*<esc>`<i*<esc>", { buffer = true, desc = "Markdown: 斜体" })
+    keymap.set("n", "<leader>mc", "viw<esc>a`<esc>bi`<esc>", { buffer = true, desc = "Markdown: 代码" })
+    keymap.set("v", "<leader>mc", "<esc>`>a`<esc>`<i`<esc>", { buffer = true, desc = "Markdown: 代码" })
+
+    -- 链接
+    keymap.set("n", "<leader>ml", "viw<esc>a]()<esc>bi[<esc>", { buffer = true, desc = "Markdown: 创建链接" })
+    keymap.set("v", "<leader>ml", "<esc>`>a]()<esc>`<i[<esc>", { buffer = true, desc = "Markdown: 创建链接" })
+
+    -- 插入
+    keymap.set("n", "<leader>mh", "I# <esc>", { buffer = true, desc = "Markdown: 插入 H1" })
+    keymap.set("n", "<leader>mH", "I## <esc>", { buffer = true, desc = "Markdown: 插入 H2" })
+    keymap.set("n", "<leader>m-", "I- <esc>", { buffer = true, desc = "Markdown: 插入列表项" })
+    keymap.set("n", "<leader>m[", "I- [ ] <esc>", { buffer = true, desc = "Markdown: 插入复选框" })
+
+    -- 目录
+    keymap.set("n", "<leader>mo", "<cmd>Toc<CR>", { buffer = true, desc = "Markdown: 显示目录" })
+  end,
+})
