@@ -307,8 +307,8 @@ require("lazy").setup({
           enabled = true,
           -- 标题符号
           sign = true,
-          -- 标题图标（使用简单符号，不需要特殊字体）
-          icons = { "# ", "## ", "### ", "#### ", "##### ", "###### " },
+          -- 标题图标（需要 Nerd Fonts 字体，运行 ./install-fonts.sh 安装）
+          icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
           -- 标题背景
           backgrounds = {
             "RenderMarkdownH1Bg",
@@ -340,8 +340,8 @@ require("lazy").setup({
         bullet = {
           -- 启用项目符号渲染
           enabled = true,
-          -- 不同层级的符号（使用基本符号）
-          icons = { "•", "◦", "▪", "▫" },
+          -- 不同层级的符号
+          icons = { "●", "○", "◆", "◇" },
           -- 右对齐
           right_pad = 1,
         },
@@ -349,11 +349,11 @@ require("lazy").setup({
         checkbox = {
           -- 启用 checkbox 渲染
           enabled = true,
-          -- Checkbox 图标（使用简单符号）
-          unchecked = { icon = "☐ " },
-          checked = { icon = "☑ " },
+          -- Checkbox 图标
+          unchecked = { icon = "󰄱 " },
+          checked = { icon = "󰱒 " },
           custom = {
-            todo = { raw = "[-]", rendered = "○ ", highlight = "RenderMarkdownTodo" },
+            todo = { raw = "[-]", rendered = "󰥔 ", highlight = "RenderMarkdownTodo" },
           },
         },
         -- 引用块样式
@@ -361,7 +361,7 @@ require("lazy").setup({
           -- 启用引用块渲染
           enabled = true,
           -- 引用符号
-          icon = "|",
+          icon = "▋",
           -- 重复次数
           repeat_linebreak = false,
         },
@@ -378,12 +378,12 @@ require("lazy").setup({
         link = {
           -- 启用链接渲染
           enabled = true,
-          -- 链接图标（使用简单符号）
-          image = "[img] ",
+          -- 链接图标
+          image = "󰥶 ",
           -- 邮件图标
-          email = "[@] ",
+          email = "󰀓 ",
           -- 超链接图标
-          hyperlink = "[->] ",
+          hyperlink = "󰌹 ",
           -- 高亮
           highlight = "RenderMarkdownLink",
         },

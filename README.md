@@ -13,9 +13,18 @@
 > - 🔧 **清理脚本**：`./kill-nvim-processes.sh`
 
 ## Requirements
+
+### 必需
 - Neovim ≥ 0.11.3
 - Git
-- 推荐：Python3+pip、Node.js、ripgrep、fd（Telescope 更快）、基础构建工具（用于 `telescope-fzf-native`）
+- **Nerd Fonts** ⭐ 重要！用于显示图标
+
+### 推荐
+- Python3 + pip（Python LSP）
+- Node.js + npm（Markdown 预览、部分 LSP）
+- ripgrep（Telescope 搜索）
+- fd（Telescope 更快）
+- 基础构建工具（telescope-fzf-native）
 
 ## Quick Install（推荐）
 1) 克隆仓库：
@@ -24,12 +33,19 @@ git clone https://github.com/ykkaixin/nvim-config.git
 cd nvim-config
 ```
 
-2) 运行安装脚本（选择符号链接或复制）：
+2) 运行安装脚本（自动检测并安装依赖）：
 ```bash
 ./install.sh
 ```
+脚本会自动检测 Nerd Fonts，并提示是否安装。
 
-3) 启动 Neovim：
+3) 如果跳过了字体安装，手动安装 Nerd Fonts：
+```bash
+./install-fonts.sh
+```
+安装后需要在终端设置中选择 Nerd Font 字体（如 JetBrainsMono Nerd Font）
+
+4) 启动 Neovim：
 ```bash
 nvim
 ```

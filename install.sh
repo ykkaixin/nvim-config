@@ -130,6 +130,46 @@ else
     echo "  Install: brew install fd (macOS) or apt install fd-find (Linux)"
 fi
 
+# Check for Nerd Fonts (required for icons in Markdown Typora mode)
+echo ""
+echo -e "${YELLOW}Checking for Nerd Fonts...${NC}"
+NERD_FONT_INSTALLED=false
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if ls ~/Library/Fonts/*Nerd*Font* 2>/dev/null | grep -q .; then
+        NERD_FONT_INSTALLED=true
+    elif ls /Library/Fonts/*Nerd*Font* 2>/dev/null | grep -q .; then
+        NERD_FONT_INSTALLED=true
+    fi
+elif fc-list 2>/dev/null | grep -i "nerd font" >/dev/null; then
+    NERD_FONT_INSTALLED=true
+fi
+
+if [ "$NERD_FONT_INSTALLED" = true ]; then
+    echo -e "${GREEN}✓${NC} Nerd Fonts is installed"
+else
+    echo -e "${YELLOW}! Nerd Fonts not detected${NC}"
+    echo ""
+    echo "  Nerd Fonts are required for:"
+    echo "  • Markdown Typora mode (icons for headers, lists, checkboxes)"
+    echo "  • File explorer icons"
+    echo "  • Status line icons"
+    echo ""
+    read -p "Install Nerd Fonts now? [y/N]: " install_fonts
+
+    if [[ "$install_fonts" =~ ^[Yy]$ ]]; then
+        echo ""
+        echo "Installing Nerd Fonts..."
+        bash "$SCRIPT_DIR/install-fonts.sh"
+    else
+        echo ""
+        echo "  You can install Nerd Fonts later by running:"
+        echo "  ./install-fonts.sh"
+        echo ""
+        echo "  Or manually install from: https://www.nerdfonts.com/"
+    fi
+fi
+
 # First run setup
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
