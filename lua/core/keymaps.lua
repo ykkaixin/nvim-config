@@ -62,10 +62,13 @@ keymap.set("n", "[[", function() require("illuminate").goto_prev_reference(false
 -- 📝 Markdown 快捷键
 -- ============================================
 
--- Markdown 预览
-keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Markdown: 打开预览" })
-keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<CR>", { desc = "Markdown: 关闭预览" })
-keymap.set("n", "<leader>mt", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Markdown: 切换预览" })
+-- Markdown 预览（浏览器）
+keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Markdown: 打开浏览器预览" })
+keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<CR>", { desc = "Markdown: 关闭浏览器预览" })
+keymap.set("n", "<leader>mt", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Markdown: 切换浏览器预览" })
+
+-- Markdown 实时渲染（编辑器内，像 Typora）
+keymap.set("n", "<leader>mr", "<cmd>RenderMarkdown toggle<CR>", { desc = "Markdown: 切换实时渲染（Typora 模式）" })
 
 -- 表格模式
 keymap.set("n", "<leader>tm", "<cmd>TableModeToggle<CR>", { desc = "Markdown: 切换表格模式" })

@@ -283,4 +283,124 @@ require("lazy").setup({
       vim.g.bullets_renumber_on_change = 1
     end,
   },
+
+  -- ⭐ 编辑器内实时渲染（像 Typora！）
+  -- 在 nvim 内直接看到渲染效果，不需要浏览器
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("render-markdown").setup({
+        -- 启用实时渲染
+        enabled = true,
+        -- 最大文件大小（MB）
+        max_file_size = 1.5,
+        -- 渲染模式
+        render_modes = { "n", "c" },
+        -- 标题样式
+        heading = {
+          -- 启用标题渲染
+          enabled = true,
+          -- 标题符号
+          sign = true,
+          -- 标题图标
+          icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+          -- 标题背景
+          backgrounds = {
+            "RenderMarkdownH1Bg",
+            "RenderMarkdownH2Bg",
+            "RenderMarkdownH3Bg",
+            "RenderMarkdownH4Bg",
+            "RenderMarkdownH5Bg",
+            "RenderMarkdownH6Bg",
+          },
+        },
+        -- 代码块样式
+        code = {
+          -- 启用代码块渲染
+          enabled = true,
+          -- 代码块符号
+          sign = true,
+          -- 代码块样式
+          style = "full",
+          -- 左侧填充
+          left_pad = 2,
+          -- 右侧填充
+          right_pad = 2,
+          -- 语言名称
+          language_pad = 0,
+          -- 禁用语言名称
+          disable_background = { "diff" },
+        },
+        -- 项目符号样式
+        bullet = {
+          -- 启用项目符号渲染
+          enabled = true,
+          -- 不同层级的符号
+          icons = { "●", "○", "◆", "◇" },
+          -- 右对齐
+          right_pad = 1,
+        },
+        -- Checkbox 样式
+        checkbox = {
+          -- 启用 checkbox 渲染
+          enabled = true,
+          -- Checkbox 图标
+          unchecked = { icon = "󰄱 " },
+          checked = { icon = "󰱒 " },
+          custom = {
+            todo = { raw = "[-]", rendered = "󰥔 ", highlight = "RenderMarkdownTodo" },
+          },
+        },
+        -- 引用块样式
+        quote = {
+          -- 启用引用块渲染
+          enabled = true,
+          -- 引用符号
+          icon = "▋",
+          -- 重复次数
+          repeat_linebreak = false,
+        },
+        -- 分隔线样式
+        pipe_table = {
+          -- 启用表格渲染
+          enabled = true,
+          -- 表格样式
+          style = "full",
+          -- 单元格填充
+          cell = "padded",
+        },
+        -- 链接样式
+        link = {
+          -- 启用链接渲染
+          enabled = true,
+          -- 链接图标
+          image = "󰥶 ",
+          -- 邮件图标
+          email = "󰀓 ",
+          -- 超链接图标
+          hyperlink = "󰌹 ",
+          -- 高亮
+          highlight = "RenderMarkdownLink",
+        },
+        -- 窗口配置
+        win_options = {
+          -- 隐藏模式
+          conceallevel = {
+            default = vim.api.nvim_get_option_value("conceallevel", {}),
+            rendered = 3,
+          },
+          -- 隐藏光标行
+          concealcursor = {
+            default = vim.api.nvim_get_option_value("concealcursor", {}),
+            rendered = "",
+          },
+        },
+      })
+    end,
+  },
 })
