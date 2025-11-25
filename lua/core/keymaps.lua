@@ -26,10 +26,36 @@ keymap.set("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" })
 keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" })
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" })
 
--- Buffer navigation
-keymap.set("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-keymap.set("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+-- Buffer navigation (barbar.nvim)
+keymap.set("n", "<S-h>", "<cmd>BufferPrevious<CR>", { desc = "Previous buffer" })
+keymap.set("n", "<S-l>", "<cmd>BufferNext<CR>", { desc = "Next buffer" })
+keymap.set("n", "<leader>bd", "<cmd>BufferClose<CR>", { desc = "Delete buffer" })
+
+-- Barbar additional keymaps
+keymap.set("n", "<leader>bp", "<cmd>BufferPin<CR>", { desc = "Pin/unpin buffer" })
+keymap.set("n", "<leader>bc", "<cmd>BufferCloseAllButCurrent<CR>", { desc = "Close all but current buffer" })
+keymap.set("n", "<leader>bca", "<cmd>BufferCloseAllButPinned<CR>", { desc = "Close all but pinned buffers" })
+keymap.set("n", "<leader>bl", "<cmd>BufferCloseBuffersLeft<CR>", { desc = "Close all buffers to the left" })
+keymap.set("n", "<leader>br", "<cmd>BufferCloseBuffersRight<CR>", { desc = "Close all buffers to the right" })
+
+-- Goto buffer in position...
+keymap.set("n", "<leader>1", "<cmd>BufferGoto 1<CR>", { desc = "Go to buffer 1" })
+keymap.set("n", "<leader>2", "<cmd>BufferGoto 2<CR>", { desc = "Go to buffer 2" })
+keymap.set("n", "<leader>3", "<cmd>BufferGoto 3<CR>", { desc = "Go to buffer 3" })
+keymap.set("n", "<leader>4", "<cmd>BufferGoto 4<CR>", { desc = "Go to buffer 4" })
+keymap.set("n", "<leader>5", "<cmd>BufferGoto 5<CR>", { desc = "Go to buffer 5" })
+keymap.set("n", "<leader>6", "<cmd>BufferGoto 6<CR>", { desc = "Go to buffer 6" })
+keymap.set("n", "<leader>7", "<cmd>BufferGoto 7<CR>", { desc = "Go to buffer 7" })
+keymap.set("n", "<leader>8", "<cmd>BufferGoto 8<CR>", { desc = "Go to buffer 8" })
+keymap.set("n", "<leader>9", "<cmd>BufferGoto 9<CR>", { desc = "Go to buffer 9" })
+keymap.set("n", "<leader>0", "<cmd>BufferLast<CR>", { desc = "Go to last buffer" })
+
+-- Re-order buffers
+keymap.set("n", "<A-<>", "<cmd>BufferMovePrevious<CR>", { desc = "Move buffer left" })
+keymap.set("n", "<A->>", "<cmd>BufferMoveNext<CR>", { desc = "Move buffer right" })
+
+-- Buffer pick mode (like quick switch)
+keymap.set("n", "<leader>bb", "<cmd>BufferPick<CR>", { desc = "Pick buffer" })
 
 -- Better indenting
 keymap.set("v", "<", "<gv", { desc = "Indent left" })
