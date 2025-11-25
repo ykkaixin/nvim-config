@@ -73,8 +73,13 @@ require("nvim-tree").setup({
 
 -- Keymaps
 local keymap = vim.keymap
+
+-- 主要快捷键（多个选项，选择你喜欢的）
 keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
-keymap.set("n", "<M-m>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer (Alt+m)" })
+keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer (Ctrl+n, VSCode style)" })
+keymap.set("n", "<M-m>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer (Alt+m, 需要配置终端)" })
+
+-- 其他文件树操作
 keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFileToggle<CR>", { desc = "Toggle file explorer on current file" })
 keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<CR>", { desc = "Collapse file explorer" })
 keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explorer" })
