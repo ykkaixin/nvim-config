@@ -1,6 +1,82 @@
 -- Keymaps
 local keymap = vim.keymap
 
+-- ============================================
+-- ⭐ IntelliJ IDEA 完全兼容快捷键
+-- ============================================
+
+-- ===== 编辑操作 =====
+-- Cmd+D: 复制当前行
+keymap.set("n", "<D-d>", "yyp", { desc = "Duplicate Line (Cmd+D)" })
+keymap.set("n", "<C-d>", "yyp", { desc = "Duplicate Line (Ctrl+D)" })
+
+-- Cmd+Y 或 Cmd+Backspace: 删除当前行
+keymap.set("n", "<D-y>", "dd", { desc = "Delete Line (Cmd+Y)" })
+keymap.set("n", "<C-y>", "dd", { desc = "Delete Line (Ctrl+Y)" })
+keymap.set("n", "<D-BS>", "dd", { desc = "Delete Line (Cmd+Backspace)" })
+
+-- Cmd+/: 行注释（需要 Comment.nvim 插件）
+keymap.set("n", "<D-/>", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Toggle Comment (Cmd+/)" })
+keymap.set("v", "<D-/>", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = "Toggle Comment (Cmd+/)" })
+keymap.set("n", "<C-/>", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Toggle Comment (Ctrl+/)" })
+keymap.set("v", "<C-/>", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", { desc = "Toggle Comment (Ctrl+/)" })
+
+-- Cmd+Shift+Up/Down: 移动语句
+keymap.set("n", "<D-S-Up>", ":m .-2<CR>==", { desc = "Move Line Up (Cmd+Shift+Up)" })
+keymap.set("n", "<D-S-Down>", ":m .+1<CR>==", { desc = "Move Line Down (Cmd+Shift+Down)" })
+keymap.set("v", "<D-S-Up>", ":m '<-2<CR>gv=gv", { desc = "Move Lines Up (Cmd+Shift+Up)" })
+keymap.set("v", "<D-S-Down>", ":m '>+1<CR>gv=gv", { desc = "Move Lines Down (Cmd+Shift+Down)" })
+keymap.set("n", "<C-S-Up>", ":m .-2<CR>==", { desc = "Move Line Up (Ctrl+Shift+Up)" })
+keymap.set("n", "<C-S-Down>", ":m .+1<CR>==", { desc = "Move Line Down (Ctrl+Shift+Down)" })
+
+-- Cmd+Alt+L: 格式化代码
+keymap.set("n", "<D-M-l>", "<cmd>lua vim.lsp.buf.format()<CR>", { desc = "Format Code (Cmd+Alt+L)" })
+keymap.set("v", "<D-M-l>", "<cmd>lua vim.lsp.buf.format()<CR>", { desc = "Format Code (Cmd+Alt+L)" })
+keymap.set("n", "<C-M-l>", "<cmd>lua vim.lsp.buf.format()<CR>", { desc = "Format Code (Ctrl+Alt+L)" })
+
+-- Shift+F6: 重命名
+keymap.set("n", "<S-F6>", "<cmd>lua vim.lsp.buf.rename()<CR>", { desc = "Rename (Shift+F6)" })
+
+-- Alt+Enter: 代码操作
+keymap.set("n", "<M-CR>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { desc = "Code Action (Alt+Enter)" })
+keymap.set("v", "<M-CR>", "<cmd>lua vim.lsp.buf.code_action()<CR>", { desc = "Code Action (Alt+Enter)" })
+
+-- Cmd+P: 参数信息
+keymap.set("n", "<D-p>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { desc = "Parameter Info (Cmd+P)" })
+keymap.set("i", "<D-p>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { desc = "Parameter Info (Cmd+P)" })
+
+-- ===== 标签页/缓冲区管理 =====
+-- Cmd+W: 关闭标签页
+keymap.set("n", "<D-w>", "<cmd>BufferClose<CR>", { desc = "Close Tab (Cmd+W)" })
+keymap.set("n", "<C-w>", "<cmd>BufferClose<CR>", { desc = "Close Tab (Ctrl+W)" })
+
+-- Cmd+Shift+[: 上一个标签页
+keymap.set("n", "<D-S-[>", "<cmd>BufferPrevious<CR>", { desc = "Previous Tab (Cmd+Shift+[)" })
+keymap.set("n", "<C-S-[>", "<cmd>BufferPrevious<CR>", { desc = "Previous Tab (Ctrl+Shift+[)" })
+
+-- Cmd+Shift+]: 下一个标签页
+keymap.set("n", "<D-S-]>", "<cmd>BufferNext<CR>", { desc = "Next Tab (Cmd+Shift+])" })
+keymap.set("n", "<C-S-]>", "<cmd>BufferNext<CR>", { desc = "Next Tab (Ctrl+Shift+])" })
+
+-- ===== 窗口管理 =====
+-- Cmd+1: 打开/关闭项目工具窗口（文件树）
+keymap.set("n", "<D-1>", "<cmd>NvimTreeToggle<CR>", { desc = "Project Tool Window (Cmd+1)" })
+keymap.set("n", "<C-1>", "<cmd>NvimTreeToggle<CR>", { desc = "Project Tool Window (Ctrl+1)" })
+
+-- ===== 保存和退出 =====
+-- Cmd+S: 保存文件
+keymap.set("n", "<D-s>", "<cmd>w<CR>", { desc = "Save File (Cmd+S)" })
+keymap.set("i", "<D-s>", "<Esc><cmd>w<CR>", { desc = "Save File (Cmd+S)" })
+keymap.set("n", "<C-s>", "<cmd>w<CR>", { desc = "Save File (Ctrl+S)" })
+keymap.set("i", "<C-s>", "<Esc><cmd>w<CR>", { desc = "Save File (Ctrl+S)" })
+
+-- Cmd+Q: 退出
+keymap.set("n", "<D-q>", "<cmd>qa<CR>", { desc = "Quit (Cmd+Q)" })
+
+-- ============================================
+-- 标准 Neovim 快捷键（保留作为备选）
+-- ============================================
+
 -- General keymaps
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 
